@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="javascript/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+<h2>Яка кількіть днів в році?</h2>
+<label id="lab1">165</label>
+<input id="check1" type="checkbox"/>
+
+<label id="lab2">265</label>
+<input id="check2" type="checkbox"/>
+
+<label id="lab3">365</label>
+<input id="check3" type="checkbox"/>
+
+<label id="lab4">335</label>
+<input id="check4" type="checkbox"/>
+<input type="button" id="Save" value="Save">
+<input type="button" id="Reload" value="Reload">
+
+</body>
+
+<script type="text/javascript">
+
+    $(window).load(function () {
+        loadData();
+    });
+
+    $("#Save").click(function () {
+        saveData();
+
+    });
+
+    $("#Reload").click(function () {
+            location.reload();
+    });
+
+    function  saveData(){
+
+        var answer1 = $('#lab1').text();
+        var answer2 = $('#lab2').text();
+        var answer3 = $('#lab3').text();
+        var answer4 = $('#lab4').text();
+
+        var checkbox1 = $('#check1').is(':checked');
+        var checkbox2 = $('#check2').is(':checked');
+        var checkbox3 = $('#check3').is(':checked');
+        var checkbox4 = $('#check4').is(':checked');
+
+        var data = {};
+        data[answer1] = checkbox1;
+        data[answer2] = checkbox2;
+        data[answer3] = checkbox3;
+        data[answer4] = checkbox4;
+
+        localStorage.setItem("data", JSON.stringify(data));
+    }
+
+    function pastDataToThePage(data) {
+        var answer1 = $('#lab1').text();
+        var answer2 = $('#lab2').text();
+        var answer3 = $('#lab3').text();
+        var answer4 = $('#lab4').text();
+
+        $.each(data, function(key, value) {
+            if(answer1 == key){
+                $('#check1').prop('checked', value);
+            }
+            if(answer2 == key){
+                $('#check2').prop('checked', value);
+            }
+            if(answer3 == key){
+                $('#check3').prop('checked', value);
+            }
+            if(answer4 == key){
+                $('#check4').prop('checked', value);
+            }
+        });
+    }
+
+    function loadData(){
+        var data = JSON.parse(localStorage.getItem("data"));
+
+        pastDataToThePage(data);
+    }
+</script>
+</html>
