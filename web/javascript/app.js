@@ -25,8 +25,8 @@ App.IndexRoute = Ember.Route.extend({
 });
 
 function getReturnData() {
-    var paragraphNumber = userObj.currentPage.paragraph;
-    var question = Data.paragraphs[paragraphNumber].tasks[userObj.currentPage.task].Qwestion;
+    var paragraphsData= Data.paragraphs;
+    var question = Data.paragraphs[userObj.currentPage.paragraph].tasks[userObj.currentPage.task].Qwestion;
     var answers = Data.paragraphs[userObj.currentPage.paragraph].tasks[userObj.currentPage.task].Ansers;
     {
         {
@@ -40,33 +40,15 @@ function getReturnData() {
 
     return result;
 }
-
-var Data = {
-    "paragraphs": {
-        "1": {
-            "tasks": {
-                "1": {
-                    "Qwestion": "Родова організація суспільства, в якій провідну роль відігравав чоловік, — це:",
-                    "Ansers": [
-                        "А Лимарство",
-                        "Б Конярство",
-                        "В Вівчарство",
-                        "Г Скотарство"
-                    ]
-                },
-                "2": {
-                    "Qwestion": "Утворення князем Романом Мстиславовичем Галицько-Волинської держави відбулося наприкінці",
-                    "Ansers": [
-                        "Х ст.",
-                        "ХІ ст",
-                        "ХІІ ст.",
-                        "ХІІІ ст."
-                    ]
-                }
-            }
-        }
-    }
-};
+function getContentData() {
+    //todo get JsonData from file and return out
+    Ember.$.getJSON("exhibits.json", function( data ) {
+        {{debugger}}
+        Ember.Logger.log('loadData Method' + data);
+        return data;
+    });
+}
+var Data = getContentData();
 
 $(window).load(function () {
 
