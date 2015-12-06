@@ -5,29 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>page</title>
     <link href="bootstrap/bootstrap.css" rel="stylesheet">
-    <!--[if IE]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <!--[if IE]> <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <link rel="stylesheet" href="css/style.css">
     <script src="javascript/jquery-2.1.1.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="javascript/jquery.fittext.js"></script>
     <script src="javascript/bootstrap.js"></script>
-    <script>
-        jQuery("#responsive_headline").fitText(2);
-        jQuery("#responsive_headline").fitText(2, {minFontSize: '20px', maxFontSize: '40px'});
+<!--ember libs-->
+    <script src="javascript/libs/jquery-1.10.2.js"></script>
+    <script src="javascript/libs/handlebars-1.1.2.js"></script>
+    <script src="javascript/libs/ember.min.js"></script>
+    <script src="javascript/libs/ember-data.js"></script>
+    <script src="javascript/libs/localstorage_adapter.js"></script>
+    <script src="javascript/app.js"></script>
 
-        jQuery("#number").fitText(0.9);
-        jQuery("#number").fitText(0.9, {minFontSize: '12px', maxFontSize: '20px'});
-
-        jQuery("#logo-text").fitText(1);
-        jQuery("#logo-text").fitText(1, {minFontSize: '12px', maxFontSize: '18px'});
-
-        jQuery("#about-kit").fitText(2);
-        jQuery("#about-kit").fitText(2, {minFontSize: '16px', maxFontSize: '24px'});
-    </script>
 </head>
 
 <body>
+<script type="text/x-handlebars">
+       {{outlet}}
+</script>
+<script type="text/x-handlebars" data-template-name="index">
 <div class="container">
     <div class="row">
         <div class="col-md-4"></div>
@@ -39,29 +37,31 @@
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4 col-xs-12 contant">
-            <h1 class="test-q">Родова організація суспільства, в якій провідну роль відігравав чоловік, — це:</h1>
+            <h1 class="test-q">{{question}}</h1>
             <ul class="test-n">
-                <li><label for="check1" id="lab1">А Лимарство </label><input type="checkbox" id="check1" ></li>
-                <li><label for="check2" id="lab2">Б Конярство</label><input type="checkbox" id="check2" ></li>
-                <li><label for="check3" id="lab3">В Вівчарство </label><input type="checkbox" id="check3" ></li>
-                <li><label for="check4" id="lab4">Г Скотарство</label><input type="checkbox" id="check4" ></li>
+                <li><label for="check1" id="lab1">{{answers.[0]}}</label><input type="checkbox" id="check1" ></li>
+                <li><label for="check2" id="lab2">{{answers.[1]}}</label><input type="checkbox" id="check2" ></li>
+                <li><label for="check3" id="lab3">{{answers.[2]}}</label><input type="checkbox" id="check3" ></li>
+                <li><label for="check4" id="lab4">{{answers.[3]}}</label><input type="checkbox" id="check4" ></li>
             </ul>
             <input type="button" class="btn btn-primary" style="width:360px" id="Save" value="Save">
             <input type="button" class="btn btn-primary" style="width:360px" id="Reload" value="Reload">
 
         </div>
 
+<h1></h1>
     </div>
 </div>
+</script>
 </body>
 <!--Script starts here-->
 <script type="text/javascript">
     $(window).load(function () {
-        loadData();
+        /*loadData();*/
     });
 
     $("#Save").click(function () {
-        saveData();
+        /*saveData();*/
 
     });
 
