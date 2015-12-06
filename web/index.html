@@ -1,61 +1,160 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta charset = "utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>page</title>
-		<link href="bootstrap/bootstrap.css" rel="stylesheet">
-		<!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-		<link rel="stylesheet" href="css/style.css">
-	</head>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>page</title>
+    <link href="bootstrap/bootstrap.css" rel="stylesheet">
+    <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link rel="stylesheet" href="css/style.css">
+    <script src="javascript/jquery-2.1.1.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="javascript/jquery.fittext.js"></script>
+    <script src="javascript/bootstrap.js"></script>
+    <script>
+        jQuery("#responsive_headline").fitText(2);
+        jQuery("#responsive_headline").fitText(2, {minFontSize: '20px', maxFontSize: '40px'});
 
-	<body>
-	<div class="container">
-		<div class="row">
-	  		<div class="col-md-4"></div>
-			<div class="col-md-4 col-xs-12 blue logo">
-				<p>HISTORIC</p>
-			</div>
-			
-		</div>
-		<div class="row">
-			<div class="col-md-4"></div>
-			<div class="col-md-4 col-xs-12 contant">
-				<h1 class="test-q">Родова організація  суспільства,  в  якій  провідну  роль  відігравав  чоловік, — це:</h1>
-				<ul class="test-n">
-					<li><a href="#">А скотарство</a></li>
-					<li><a href="#">Б скотарство</a></li>
-					<li><a href="#">В скотарство</a></li>
-					<li><a href="#">Г скотарство</a></li>
-				</ul>
-				<button class="btn btn-primary" style="width:360px">Next</button>
-				<button class="btn btn-primary" style="width:360px">Test</button>
+        jQuery("#number").fitText(0.9);
+        jQuery("#number").fitText(0.9, {minFontSize: '12px', maxFontSize: '20px'});
 
-			</div>
-			
-		</div>
-	</div>
+        jQuery("#logo-text").fitText(1);
+        jQuery("#logo-text").fitText(1, {minFontSize: '12px', maxFontSize: '18px'});
+
+        jQuery("#about-kit").fitText(2);
+        jQuery("#about-kit").fitText(2, {minFontSize: '16px', maxFontSize: '24px'});
+    </script>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 col-xs-12 blue logo">
+            <p>HISTORIC</p>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 col-xs-12 contant">
+            <h1 class="test-q">Родова організація суспільства, в якій провідну роль відігравав чоловік, — це:</h1>
+            <ul class="test-n">
+                <li><label for="check1" id="lab1">А Лимарство </label><input type="checkbox" id="check1" ></li>
+                <li><label for="check2" id="lab2">Б Конярство</label><input type="checkbox" id="check2" ></li>
+                <li><label for="check3" id="lab3">В Вівчарство </label><input type="checkbox" id="check3" ></li>
+                <li><label for="check4" id="lab4">Г Скотарство</label><input type="checkbox" id="check4" ></li>
+            </ul>
+            <input type="button" class="btn btn-primary" style="width:360px" id="Save" value="Save">
+            <input type="button" class="btn btn-primary" style="width:360px" id="Reload" value="Reload">
+
+        </div>
+
+    </div>
+</div>
 </body>
-		<!--Script starts here-->
-		<script type="text/javascript">
+<!--Script starts here-->
+<script type="text/javascript">
+    $(window).load(function () {
+        loadData();
+    });
 
+    $("#Save").click(function () {
+        saveData();
+
+    });
+
+    $("#Reload").click(function () {
+        location.reload();
+    });
+
+    function  saveData(){
+
+        var answer1 = $('#lab1').text();
+        var answer2 = $('#lab2').text();
+        var answer3 = $('#lab3').text();
+        var answer4 = $('#lab4').text();
+
+        var checkbox1 = $('#check1').is(':checked');
+        var checkbox2 = $('#check2').is(':checked');
+        var checkbox3 = $('#check3').is(':checked');
+        var checkbox4 = $('#check4').is(':checked');
+
+        var data = {};
+        data[answer1] = checkbox1;
+        data[answer2] = checkbox2;
+        data[answer3] = checkbox3;
+        data[answer4] = checkbox4;
+
+        saveToStorage(1, 1, data);
+
+        function saveToStorage(paragraphNumber,taskNumber,data){
+
+            var storageData = JSON.parse(localStorage.getItem("userAnswers"));
+
+            if(storageData) {
+                var tasks = storageData.paragraphs[paragraphNumber].tasks[taskNumber];
+                $.each(data, function (key, value) {
+                    tasks[key] = value;
+                });
+
+                storageData.paragraphs[paragraphNumber].tasks[taskNumber] = tasks;
+            }else{
+                storageData = {
+                    paragraphs: {
+                        1: {
+                            tasks: {
+                                1:{
+
+                                }
+                            }
+                        }
+                    }
+                };
+
+                $.each(data, function (key,value) {
+                    storageData.paragraphs[paragraphNumber].tasks[taskNumber][key] = value;
+                });
+
+
+
+            }
+
+            localStorage.setItem("userAnswers", JSON.stringify(storageData));
+        }
+    }
+
+    function pastDataToThePage(data) {
+        var answer1 = $('#lab1').text();
+        var answer2 = $('#lab2').text();
+        var answer3 = $('#lab3').text();
+        var answer4 = $('#lab4').text();
+
+        $.each(data, function(key, value) {
+            if(answer1 == key){
+                $('#check1').prop('checked', value);
+            }
+            if(answer2 == key){
+                $('#check2').prop('checked', value);
+            }
+            if(answer3 == key){
+                $('#check3').prop('checked', value);
+            }
+            if(answer4 == key){
+                $('#check4').prop('checked', value);
+            }
+        });
+    }
+
+    function loadData(){
+        var storageData = JSON.parse(localStorage.getItem("userAnswers"));
+
+        var data = storageData.paragraphs[1].tasks[1];
+        pastDataToThePage(data);
+    }
 </script>
 
 
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script src="javascript/jquery.fittext.js"></script>
-		<script src="javascript/bootstrap.js"></script>
-		<script>
-		  jQuery("#responsive_headline").fitText(2);
-		  jQuery("#responsive_headline").fitText(2, { minFontSize: '20px', maxFontSize: '40px' });
-		  
-		  jQuery("#number").fitText(0.9);
-		  jQuery("#number").fitText(0.9, { minFontSize: '12px', maxFontSize: '20px' });
 
-		  jQuery("#logo-text").fitText(1);
-		  jQuery("#logo-text").fitText(1, { minFontSize: '12px', maxFontSize: '18px' });
-
-		  jQuery("#about-kit").fitText(2);
-		  jQuery("#about-kit").fitText(2, { minFontSize: '16px', maxFontSize: '24px' });
-		</script>
 </html>
