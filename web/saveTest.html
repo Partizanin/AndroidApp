@@ -56,7 +56,42 @@
         data[answer3] = checkbox3;
         data[answer4] = checkbox4;
 
-        localStorage.setItem("data", JSON.stringify(data));
+        saveToStorage(1, 1, data);
+
+        function saveToStorage(paragraphNumber,taskNumber,data){
+
+            var storageData = JSON.parse(localStorage.getItem("userAnswers"));
+
+            if(storageData) {
+                var tasks = storageData.paragraphs[paragraphNumber].tasks[taskNumber];
+                $.each(data, function (key, value) {
+                    tasks[key] = value;
+                });
+
+                storageData.paragraphs[paragraphNumber].tasks[taskNumber] = tasks;
+            }else{
+                storageData = {
+                    paragraphs: {
+                        1: {
+                            tasks: {
+                                1:{
+
+                                }
+                            }
+                        }
+                    }
+                };
+
+                $.each(data, function (key,value) {
+                    storageData.paragraphs[paragraphNumber].tasks[taskNumber][key] = value;
+                });
+
+
+
+            }
+
+            localStorage.setItem("userAnswers", JSON.stringify(storageData));
+        }
     }
 
     function pastDataToThePage(data) {
@@ -82,8 +117,9 @@
     }
 
     function loadData(){
-        var data = JSON.parse(localStorage.getItem("data"));
+        var storageData = JSON.parse(localStorage.getItem("userAnswers"));
 
+        var data = storageData.paragraphs[1].tasks[1];
         pastDataToThePage(data);
     }
 </script>
