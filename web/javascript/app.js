@@ -11,7 +11,7 @@ App.IndexRoute = Ember.Route.extend({
 
     actions: {
         save: function () {
-            Ember.Logger.log('Rload Button');
+            Ember.Logger.log('Reoad Button');
             saveData();
         },
         next: function () {
@@ -39,7 +39,6 @@ function getReturnData() {
     var result = {};
     result.question = question;
     result.answers = answers;
-    {{debugger}}
 
     return result;
 }
@@ -65,8 +64,9 @@ function saveData() {
     data[answer2] = checkbox2;
     data[answer3] = checkbox3;
     data[answer4] = checkbox4;
+    var currentPage = userObj.currentPage;
 
-    saveToStorage(1, 1, data);
+    saveToStorage(currentPage.paragraph, currentPage.task, data);
 
     function saveToStorage(paragraphNumber, taskNumber, data) {
 
@@ -76,9 +76,16 @@ function saveData() {
 
             var tasks = storageData.paragraphs[paragraphNumber].tasks[taskNumber];
 
-            $.each(data, function (key, value) {
-                tasks[key] = value;
-            });
+           if(tasks) {
+               $.each(data, function (key, value) {
+                   tasks[key] = value;
+               });
+           }else{
+               tasks = {};
+               $.each(data, function (key, value) {
+                   tasks[key] = value;
+               });
+           }
 
             storageData.paragraphs[paragraphNumber].tasks[taskNumber] = tasks;
         } else {
@@ -127,9 +134,10 @@ function pastDataToThePage(data) {
 
 function loadData() {
     var storageData = JSON.parse(localStorage.getItem("userAnswers"));
-    Ember.Logger.log('loadData Method' + storageData);
+
     if (storageData) {
-        var data = storageData.paragraphs[1].tasks[1];
+        var currentPage = userObj.currentPage;
+        var data = storageData.paragraphs[currentPage.paragraph].tasks[currentPage.task];
 
         pastDataToThePage(data);
     }
@@ -139,21 +147,40 @@ function loadData() {
 function loadNextContent() {
 
     var userTask = userObj.currentPage.task;
-    if (userTask != 2) {
-        userObj.currentPage.task = 2;
-    } else {
+    var userParagraph = userObj.currentPage.paragraph;
+    var contentExist = function(){
+        var content = getContentData(userParagraph, userTask + 1);
+        return content != undefined || content != null;
+    };
 
-        userObj.currentPage.task = 1;
+    if(contentExist()){
+        userObj.currentPage.task = userTask + 1;
 
+        localStorage.setItem("UserData", JSON.stringify(userObj));
+
+        location.reload();
+    }else{
+        window.alert("this is last task");
     }
 
-    localStorage.setItem("UserData", JSON.stringify(userObj));
-    location.reload();
 }
 
 function loadPreviousContent() {
+    var userTask = userObj.currentPage.task;
+    if (userTask != 1) {
+        userObj.currentPage.task = userTask - 1;
+        localStorage.setItem("UserData", JSON.stringify(userObj));
+        location.reload();
+    } else {
+
+        window.alert("this is first task!!")
+
+    }
+
+
 
 }
+
 var userObj = getUserObj();
 
 function getUserObj() {
@@ -161,7 +188,7 @@ function getUserObj() {
     if (result) {
 
     } else {
-        {{debugger}}
+
         var data = {
             "currentPage": {
                 "paragraph": 1,
@@ -200,6 +227,15 @@ function getContentData(paragrapgNumber,taskNumber) {
                             "ХІ ст",
                             "ХІІ ст.",
                             "ХІІІ ст."
+                        ]
+                    },
+                    "3": {
+                        "Qwestion": "У «Слові о полку Ігоревім» ідеться про",
+                        "Ansers": [
+                            "один із походів руських князів на половців.",
+                            "монгольську навалу на руські князівства.",
+                            "розгром Хозарського каганату.",
+                            "набіги печенігів на руські землі."
                         ]
                     }
                 }
