@@ -18,6 +18,11 @@ App.IndexRoute = Ember.Route.extend({
             Ember.Logger.log('Next Button');
 
             loadNextContent();
+        },
+        prev: function () {
+            Ember.Logger.log('Next Button');
+
+            loadPreviousContent();
         }
 
     }
@@ -25,30 +30,19 @@ App.IndexRoute = Ember.Route.extend({
 });
 
 function getReturnData() {
-    var paragraphsData= Data.paragraphs;
-    var question = Data.paragraphs[userObj.currentPage.paragraph].tasks[userObj.currentPage.task].Qwestion;
-    var answers = Data.paragraphs[userObj.currentPage.paragraph].tasks[userObj.currentPage.task].Ansers;
-    {
-        {
-            debugger
-        }
-    }
+
+    var paragraphsData = getContentData(userObj.currentPage.paragraph,userObj.currentPage.task);
+
+    var question = paragraphsData.Qwestion;
+    var answers = paragraphsData.Ansers;
+
     var result = {};
-    result["question"] = question;
-    result["answers"] = answers;
+    result.question = question;
+    result.answers = answers;
     {{debugger}}
 
     return result;
 }
-function getContentData() {
-    //todo get JsonData from file and return out
-    Ember.$.getJSON("exhibits.json", function( data ) {
-        {{debugger}}
-        Ember.Logger.log('loadData Method' + data);
-        return data;
-    });
-}
-var Data = getContentData();
 
 $(window).load(function () {
 
@@ -152,10 +146,15 @@ function loadNextContent() {
         userObj.currentPage.task = 1;
 
     }
-    {{debugger}}
+
     localStorage.setItem("UserData", JSON.stringify(userObj));
     location.reload();
 }
+
+function loadPreviousContent() {
+
+}
+var userObj = getUserObj();
 
 function getUserObj() {
     var result = JSON.parse(localStorage.getItem("UserData"));
@@ -174,7 +173,41 @@ function getUserObj() {
 
         localStorage.setItem("UserData", JSON.stringify(data));
     }
-    {{debugger}}
+
     return result;
+
 }
-var userObj = getUserObj();
+
+function getContentData(paragrapgNumber,taskNumber) {
+
+    var data = {
+        "paragraphs": {
+            "1": {
+                "tasks": {
+                    "1": {
+                        "Qwestion": "Родова організація суспільства, в якій провідну роль відігравав чоловік, — це:",
+                        "Ansers": [
+                            "А Лимарство",
+                            "Б Конярство",
+                            "В Вівчарство",
+                            "Г Скотарство"
+                        ]
+                    },
+                    "2": {
+                        "Qwestion": "Утворення князем Романом Мстиславовичем Галицько-Волинської держави відбулося наприкінці",
+                        "Ansers": [
+                            "Х ст.",
+                            "ХІ ст",
+                            "ХІІ ст.",
+                            "ХІІІ ст."
+                        ]
+                    }
+                }
+            }
+        }
+    };
+
+    return data.paragraphs[paragrapgNumber].tasks[taskNumber];
+
+
+}
