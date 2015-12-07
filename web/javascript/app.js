@@ -31,8 +31,12 @@ App.IndexRoute = Ember.Route.extend({
 
 function getReturnData() {
 
-    var paragraphsData = getContentData(userObj.currentPage.paragraph,userObj.currentPage.task);
-
+    var paragraphsData = getContentData(userObj.currentPage.paragraph, userObj.currentPage.task);
+    {
+        {
+            debugger
+        }
+    }
     var question = paragraphsData.Qwestion;
     var answers = paragraphsData.Ansers;
     var currentPage = userObj.currentPage;
@@ -78,16 +82,16 @@ function saveData() {
 
             var tasks = storageData.paragraphs[paragraphNumber].tasks[taskNumber];
 
-           if(tasks) {
-               $.each(data, function (key, value) {
-                   tasks[key] = value;
-               });
-           }else{
-               tasks = {};
-               $.each(data, function (key, value) {
-                   tasks[key] = value;
-               });
-           }
+            if (tasks) {
+                $.each(data, function (key, value) {
+                    tasks[key] = value;
+                });
+            } else {
+                tasks = {};
+                $.each(data, function (key, value) {
+                    tasks[key] = value;
+                });
+            }
 
             storageData.paragraphs[paragraphNumber].tasks[taskNumber] = tasks;
         } else {
@@ -139,9 +143,23 @@ function loadData() {
 
     if (storageData) {
         var currentPage = userObj.currentPage;
-        var data = storageData.paragraphs[currentPage.paragraph].tasks[currentPage.task];
 
-        pastDataToThePage(data);
+        var data = function () {
+            if (storageData.paragraphs[currentPage.paragraph] != null ||
+                storageData.paragraphs[currentPage.paragraph] != undefined) {
+
+                if (storageData.paragraphs[currentPage.paragraph].tasks[currentPage.task] != null ||
+                    storageData.paragraphs[currentPage.paragraph].tasks[currentPage.task] != undefined) {
+
+                    var result = storageData.paragraphs[currentPage.paragraph].tasks[currentPage.task];
+                }
+            }
+            return result;
+        };
+
+        if (data) {
+            pastDataToThePage(data);
+        }
     }
 
 }
@@ -150,18 +168,33 @@ function loadNextContent() {
 
     var userTask = userObj.currentPage.task;
     var userParagraph = userObj.currentPage.paragraph;
-    var contentExist = function(){
-        var content = getContentData(userParagraph, userTask + 1);
+    var contentExist = function () {
+        var content;
+        if(getContentData(userParagraph, userTask + 1) != undefined){
+
+        content = getContentData(userParagraph, userTask + 1);
+        }else{
+            window.alert("this is last task");
+        }
+        if (!content) {
+            content = getContentData(userParagraph + 1, 1);
+            if (content) {
+                userObj.currentPage.paragraph = userParagraph + 1;
+                userObj.currentPage.task = 1;
+            }
+        } else {
+            userObj.currentPage.task = userTask + 1;
+        }
+
         return content != undefined || content != null;
     };
 
-    if(contentExist()){
-        userObj.currentPage.task = userTask + 1;
+    if (contentExist()) {
 
         localStorage.setItem("UserData", JSON.stringify(userObj));
 
         location.reload();
-    }else{
+    } else {
         window.alert("this is last task");
     }
 
@@ -169,16 +202,25 @@ function loadNextContent() {
 
 function loadPreviousContent() {
     var userTask = userObj.currentPage.task;
+    var userParagraph = userObj.currentPage.paragraph;
     if (userTask != 1) {
         userObj.currentPage.task = userTask - 1;
         localStorage.setItem("UserData", JSON.stringify(userObj));
         location.reload();
     } else {
 
-        window.alert("this is first task!!")
+        var data = getContentData(userParagraph - 1, 1) != undefined;
+        if(data){
+            userObj.currentPage.paragraph = userParagraph - 1;
+            localStorage.setItem("UserData", JSON.stringify(userObj));
+            location.reload();
+
+        }else{
+
+            window.alert("this is first task!!")
+        }
 
     }
-
 
 
 }
@@ -207,7 +249,7 @@ function getUserObj() {
 
 }
 
-function getContentData(paragrapgNumber,taskNumber) {
+function getContentData(paragrapgNumber, taskNumber) {
 
     var data = {
         "paragraphs": {
@@ -274,7 +316,7 @@ function getContentData(paragrapgNumber,taskNumber) {
             }
         }
     };
-
+//todo catch exception
     return data.paragraphs[paragrapgNumber].tasks[taskNumber];
 
 
